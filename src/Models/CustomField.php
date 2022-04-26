@@ -2,24 +2,23 @@
 
 namespace Givebutter\LaravelCustomFields\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CustomField extends Model
 {
-	
-	use SoftDeletes;
-	
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     protected $fillable = [
-        'type', 
-        'title', 
-        'description', 
-        'answers', 
-        'required', 
-        'default_value', 
+        'type',
+        'title',
+        'description',
+        'answers',
+        'required',
+        'default_value',
         'order',
     ];
 
@@ -55,7 +54,7 @@ class CustomField extends Model
             'number' => [
                 'integer',
             ],
-            'checkbox' => $required ? ['accepted','in:0,1'] : ['in:0,1'],
+            'checkbox' => $required ? ['accepted', 'in:0,1'] : ['in:0,1'],
             'radio' => [
                 'string',
                 'max:255',
@@ -78,8 +77,21 @@ class CustomField extends Model
     {
         $typeRules = $this->fieldValidationRules($this->required)[$this->type];
         array_unshift($typeRules, $this->required ? 'required' : 'nullable');
- 
+
         return $typeRules;
+    }
+
+    public function resolveResponseValueAttributeColumn()
+    {
+        return match ($this->type) {
+            'number'   => 'value_int',
+            'checkbox' => 'value_int',
+            'radio'    => 'value_str',
+            'select'   => 'value_str',
+            'text'     => 'value_str',
+            'textarea' => 'value_text',
+            default => 'value_str',
+        };
     }
 
     public static function boot()

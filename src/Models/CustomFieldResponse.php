@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class CustomFieldResponse extends Model
 {
     protected $guarded = ['id'];
-    
+
     protected $fillable = [
-        'value',
+        'value_str',
+        'value_text',
+        'value_int',
+        'field_id',
+        'model_id',
+        'model_type',
     ];
 
     const VALUE_FIELDS = [
@@ -79,19 +84,9 @@ class CustomFieldResponse extends Model
     {
         // checkboxes send a default value of `on` so we need to booleanize it.
         if ($this->field->type === 'checkbox') {
-            $value = !!$value;
+            $value = (bool) $value;
         }
 
         return $value;
-    }
-
-    public function setValueAttribute($value)
-    {
-        $this->attributes['value_int'] = null;
-        $this->attributes['value_str'] = null;
-        $this->attributes['value_text'] = null;
-        unset($this->attributes['value']);
-
-        $this->attributes[$this->valueField()] = $this->formatValue($value);
     }
 }

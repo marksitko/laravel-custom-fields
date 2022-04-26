@@ -2,12 +2,12 @@
 
 namespace Givebutter\Tests\Feature;
 
-use Givebutter\LaravelCustomFields\Models\CustomField;
-use Givebutter\LaravelCustomFields\Models\CustomFieldResponse;
+use Givebutter\Tests\TestCase;
 use Givebutter\Tests\Support\Survey;
 use Givebutter\Tests\Support\SurveyResponse;
-use Givebutter\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Givebutter\LaravelCustomFields\Models\CustomField;
+use Givebutter\LaravelCustomFields\Models\CustomFieldResponse;
 
 class HasCustomFieldResponsesTest extends TestCase
 {
@@ -75,7 +75,6 @@ class HasCustomFieldResponsesTest extends TestCase
         $this->assertEquals($secondResponse->id, SurveyResponse::whereField($firstField, 'Best Rapper Alive')->first()->id);
     }
 
-
     /** @test */
     public function value_getter_and_setter_work_fine()
     {
@@ -99,7 +98,7 @@ class HasCustomFieldResponsesTest extends TestCase
 
         $customFieldResponseModel->customFieldResponses()->save($customFieldResponse);
         $this->assertEquals('Best Rapper Alive', $customFieldResponse->fresh()->value);
-        $customFieldResponse->update(['value' => 'Hit Em Up']);
+        $customFieldResponse->update([$customField->resolveResponseValueAttributeColumn() => 'Hit Em Up']);
         $this->assertEquals('Hit Em Up', $customFieldResponse->fresh()->value);
     }
 }

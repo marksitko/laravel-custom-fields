@@ -19,7 +19,7 @@ trait HasCustomFieldResponses
             }
 
             config('custom-fields.models.custom_field_response')::create([
-                'value' => $value,
+                $customField->resolveResponseValueAttributeColumn() => $value,
                 'field_id' => $customField->id,
                 'model_id' => $this->id,
                 'model_type' => get_class($this),
@@ -42,11 +42,11 @@ trait HasCustomFieldResponses
                 'model_type' => get_class($this),
             ])->first()) {
                 $customFieldResponse->update([
-                    'value' => $value,
+                    $customField->resolveResponseValueAttributeColumn() => $value,
                 ]);
             } else {
                 config('custom-fields.models.custom_field_response')::create([
-                    'value' => $value,
+                    $customField->resolveResponseValueAttributeColumn() => $value,
                     'field_id' => $customField->id,
                     'model_id' => $this->id,
                     'model_type' => get_class($this),
